@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#0d0f12" />
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="ODDS" />
+
+<link rel="manifest" href="manifest.json" />
+
+<title>ODDS</title>
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <main id="app">
+
+    <!-- MAIN MENU -->
+    <section id="menu-screen" class="screen active">
+      <div class="menu-wrap">
+
+        <h1 class="logo">Odds</h1>
+
+        <div class="username-box">
+          <span class="username-label">PLAYER</span>
+          <button id="username-button" class="username-button">@PLAYER</button>
+        </div>
+
+        <button id="watch-card" class="watch-card">
+          <div class="watch-image-placeholder">
+  <img
+    id="equipped-watch-image"
+    src="assets/watches/starter.png"
+    alt="Equipped Watch"
+  />
+</div>
+
+          <div class="watch-info">
+            <span id="watch-name" class="watch-name">Starter Watch</span>
+            <span id="watch-value" class="watch-value">$0</span>
+          </div>
+
+          <span class="watch-hint">Tap to view watches</span>
+        </button>
+
+        <div class="cash-panel">
+          <span class="cash-label">CURRENT CASH</span>
+          <span id="player-cash" class="cash-value">$0</span>
+        </div>
+
+        <div class="menu-actions">
+          <button id="play-button" class="primary-button">
+            PLAY
+          </button>
+
+          <button id="stats-button" class="stats-button">
+            STATS
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- GAME SCREEN -->
+    <section id="game-screen" class="screen">
+      <div class="game-wrap">
+
+        <div id="run-score" class="run-score">$0</div>
+
+        <div id="game-board" class="game-board"></div>
+
+        <button id="cash-out-button" class="primary-button cash-out-button">
+          CASH OUT
+        </button>
+
+      </div>
+    </section>
+
+<!-- DOUBLE OR NUTHIN SCREEN -->
+<section id="double-screen" class="screen">
+  <div class="double-wrap">
+
+    <h2 class="double-title">DOUBLE OR NUTHIN</h2>
+
+    <div id="double-balance-area" class="double-balance-area">
+      <span class="double-label">BALANCE</span>
+      <span id="double-balance" class="double-balance">$0</span>
+    </div>
+
+    <div id="double-bet-menu" class="double-bet-menu">
+
+      <button id="bet-half-button" class="double-bet-button">
+        <span>BET HALF</span>
+        <strong id="half-bet-amount">$0</strong>
+      </button>
+
+      <button id="bet-all-button" class="double-bet-button all-in">
+        <span>ALL IN</span>
+        <strong id="all-bet-amount">$0</strong>
+      </button>
+
+      <button id="double-back-button" class="secondary-button">
+        MAIN MENU
+      </button>
+
+    </div>
+
+
+    <div id="double-game-area" class="double-game-area">
+
+      <span class="double-label">CURRENT BET</span>
+      <div id="double-current-bet" class="double-current-bet">
+        $0
+      </div>
+
+      <div id="double-boxes" class="double-boxes"></div>
+
+      <div id="double-result" class="double-result"></div>
+
+      <div id="double-result-buttons" class="double-result-buttons">
+        <button id="double-again-button" class="primary-button">
+          PLAY AGAIN
+        </button>
+
+        <button id="double-menu-button" class="secondary-button">
+          MAIN MENU
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+    <!-- END SCREEN -->
+    <section id="end-screen" class="screen">
+      <div class="end-wrap">
+
+        <div id="end-title" class="end-title">
+          CASHED OUT
+        </div>
+
+        <div id="end-score" class="end-score">
+          $0
+        </div>
+
+        <div id="end-message" class="end-message">
+          Added to your balance.
+        </div>
+
+        <button id="new-game-button" class="primary-button">
+          NEW GAME
+        </button>
+
+        <button id="menu-button" class="secondary-button">
+          MAIN MENU
+        </button>
+
+      </div>
+    </section>
+
+
+    <!-- WATCH SCREEN -->
+    <section id="watch-screen" class="screen">
+      <div class="watch-screen-wrap">
+
+        <div class="screen-header">
+          <button id="watch-back-button" class="back-button">
+            ←
+          </button>
+
+          <h2>WATCHES</h2>
+
+          <div class="header-spacer"></div>
+        </div>
+
+        <div id="watch-list" class="watch-list"></div>
+
+      </div>
+    </section>
+
+
+    <!-- STATS SCREEN -->
+    <section id="stats-screen" class="screen">
+      <div class="stats-wrap">
+
+        <div class="screen-header">
+          <button id="stats-back-button" class="back-button">
+            ←
+          </button>
+
+          <h2>STATS</h2>
+
+          <div class="header-spacer"></div>
+        </div>
+
+        <div class="stats-grid">
+
+          <div class="stat-card">
+            <span class="stat-label">BEST RUN</span>
+            <span id="stat-best-run" class="stat-value">$0</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">LIFETIME EARNINGS</span>
+            <span id="stat-lifetime" class="stat-value">$0</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">RUNS PLAYED</span>
+            <span id="stat-runs" class="stat-value">0</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">BUSTS</span>
+            <span id="stat-busts" class="stat-value">0</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">JACKPOTS</span>
+            <span id="stat-jackpots" class="stat-value">0</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">WATCH VALUE</span>
+            <span id="stat-watch-value" class="stat-value">$0</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+<!-- GAME MODE MODAL -->
+<div id="mode-modal" class="modal">
+  <div class="modal-card mode-card">
+
+    <h3>Choose Mode</h3>
+
+    <button id="classic-mode-button" class="mode-button">
+      <span class="mode-name">CLASSIC</span>
+      <span class="mode-description">
+        Push your luck on the 5×5 board.
+      </span>
+    </button>
+
+    <button id="double-mode-button" class="mode-button double-mode-button">
+      <span class="mode-name">DOUBLE OR NUTHIN</span>
+      <span class="mode-description">
+        Risk half or all of your cash.
+      </span>
+    </button>
+
+    <button id="cancel-mode-button" class="secondary-button">
+      CANCEL
+    </button>
+
+  </div>
+</div>
+
+    <!-- USERNAME MODAL -->
+    <div id="username-modal" class="modal">
+      <div class="modal-card">
+
+        <h3>Choose Username</h3>
+
+        <input
+          id="username-input"
+          type="text"
+          maxlength="16"
+          autocomplete="off"
+          placeholder="PLAYER"
+        />
+
+        <button id="save-username-button" class="primary-button">
+          SAVE
+        </button>
+
+        <button id="cancel-username-button" class="secondary-button">
+          CANCEL
+        </button>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
