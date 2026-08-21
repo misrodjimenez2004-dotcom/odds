@@ -1041,23 +1041,19 @@ async function createODDSAccount() {
   }
 
   const {
-    data,
-    error
-  } =
-    await supabaseClient.auth.signUp({
-      email,
-      password,
+  data,
+  error
+} =
+  await supabaseClient.auth.signUp({
+    email,
+    password,
 
-      options: {
-        data: {
-          username
-        },
-
-        emailRedirectTo:
-          window.location.origin +
-          window.location.pathname
+    options: {
+      data: {
+        username
       }
-    });
+    }
+  });
 
   if (error) {
     throw error;
