@@ -1248,6 +1248,63 @@ async function loadCloudProfile() {
   updateMenu();
 }
 
+async function saveCloudProfile() {
+  const {
+    data: userData,
+    error: userError
+  } =
+    await supabaseClient.auth.getUser();
+
+  if (
+    userError ||
+    !userData.user
+  ) {
+    console.error(
+      "No authenticated user for cloud save."
+    );
+    return;
+  }
+
+  const user =
+    userData.user;
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("profiles")
+      .update({
+        cash:
+          saveData.cash,
+
+        current_streak:
+          saveData.currentStreak || 0,
+
+        longest_streak:
+          saveData.longestStreak || 0,
+
+        best_run:
+          saveData.bestRun,
+
+        lifetime_earnings:
+          saveData.lifetimeEarnings,
+
+        equipped_watch:
+          saveData.equippedWatch,
+
+        updated_at:
+          new Date().toISOString()
+      })
+      .eq("id", user.id);
+
+  if (error) {
+    console.error(
+      "Cloud profile save failed:",
+      error
+    );
+  }
+}
+
 function updateStats() {
   const watch = getEquippedWatch();
 
