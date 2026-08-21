@@ -399,7 +399,12 @@ function loadSave() {
 }
 
 function saveGame() {
-  localStorage.setItem("oddsSave", JSON.stringify(saveData));
+  localStorage.setItem(
+    "oddsSave",
+    JSON.stringify(saveData)
+  );
+
+  saveCloudProfile();
 }
 
 function formatMoney(value) {
@@ -742,15 +747,71 @@ if (watch.image) {
   });
 }
 
-function buyWatch(watch) {
+async function buyWatch(watch) {
   if (saveData.cash < watch.price) {
     alert("Not enough cash.");
     return;
   }
 
-  saveData.cash -= watch.price;
-  saveData.ownedWatches.push(watch.id);
-  saveData.equippedWatch = watch.id;
+  const {
+    data: userData,
+    error: userError
+  } =
+    await supabaseClient.auth.getUser();
+
+  if (
+    userError ||
+    !userData.user
+  ) {
+    alert(
+      "Unable to verify your account."
+    );
+    return;
+  }
+
+  const user =
+    userData.user;
+
+  const {
+    error: itemError
+  } =
+    await supabaseClient
+      .from("player_items")
+      .insert({
+        user_id:
+          user.id,
+
+        item_type:
+          "watch",
+
+        item_id:
+          watch.id,
+
+        purchased_price:
+          watch.price
+      });
+
+  if (itemError) {
+    console.error(
+      itemError
+    );
+
+    alert(
+      "Unable to purchase watch."
+    );
+
+    return;
+  }
+
+  saveData.cash -=
+    watch.price;
+
+  saveData.ownedWatches.push(
+    watch.id
+  );
+
+  saveData.equippedWatch =
+    watch.id;
 
   saveGame();
 
