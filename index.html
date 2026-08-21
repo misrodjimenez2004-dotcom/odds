@@ -16,10 +16,79 @@
 </head>
 <body>
 
+<!-- AUTH SCREEN -->
+<section id="auth-screen" class="screen">
+  <div class="auth-wrap">
+
+    <h1 class="logo">Odds</h1>
+
+    <div class="auth-card">
+
+      <h2 id="auth-title">
+        WELCOME BACK
+      </h2>
+
+      <!-- Only shown when creating an account -->
+      <input
+        id="auth-email"
+        class="signup-only"
+        type="email"
+        placeholder="Email"
+        autocomplete="email"
+      />
+
+      <input
+        id="auth-username"
+        type="text"
+        maxlength="16"
+        placeholder="Username"
+        autocomplete="username"
+      />
+
+      <input
+        id="auth-password"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+      />
+
+      <!-- Only shown when creating an account -->
+      <input
+        id="auth-confirm-password"
+        class="signup-only"
+        type="password"
+        placeholder="Confirm Password"
+        autocomplete="new-password"
+      />
+
+      <button
+        id="auth-main-button"
+        class="primary-button"
+      >
+        LOG IN
+      </button>
+
+      <button
+        id="auth-switch-button"
+        class="auth-switch-button"
+      >
+        Create an account
+      </button>
+
+      <div
+        id="auth-message"
+        class="auth-message"
+      ></div>
+
+    </div>
+
+  </div>
+</section>
+
   <main id="app">
 
     <!-- MAIN MENU -->
-    <section id="menu-screen" class="screen active">
+    <section id="menu-screen" class="screen">
       <div class="menu-wrap">
 
         <h1 class="logo">Odds</h1>
@@ -289,6 +358,7 @@
 
   </main>
 
-  <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
 </body>
 </html>
