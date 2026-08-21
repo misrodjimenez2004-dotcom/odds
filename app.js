@@ -1,11 +1,100 @@
+const SUPABASE_URL =
+  "https://ezxiynzzeomcbjfzzlqb.supabase.co/rest/v1/";
+
+const SUPABASE_KEY =
+  "sb_publishable_MFTBKiQxmw0FHC3g-TT0zw_-rLiSrmQ";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    }
+  );
+
 const screens = {
-  menu: document.getElementById("menu-screen"),
-  game: document.getElementById("game-screen"),
-  double: document.getElementById("double-screen"),
-  end: document.getElementById("end-screen"),
-  watches: document.getElementById("watch-screen"),
-  stats: document.getElementById("stats-screen")
+  auth:
+    document.getElementById(
+      "auth-screen"
+    ),
+
+  menu:
+    document.getElementById(
+      "menu-screen"
+    ),
+
+  game:
+    document.getElementById(
+      "game-screen"
+    ),
+
+  double:
+    document.getElementById(
+      "double-screen"
+    ),
+
+  end:
+    document.getElementById(
+      "end-screen"
+    ),
+
+  watches:
+    document.getElementById(
+      "watch-screen"
+    ),
+
+  stats:
+    document.getElementById(
+      "stats-screen"
+    )
 };
+
+const authTitle =
+  document.getElementById(
+    "auth-title"
+  );
+
+const authEmail =
+  document.getElementById(
+    "auth-email"
+  );
+
+const authUsername =
+  document.getElementById(
+    "auth-username"
+  );
+
+const authPassword =
+  document.getElementById(
+    "auth-password"
+  );
+
+const authConfirmPassword =
+  document.getElementById(
+    "auth-confirm-password"
+  );
+
+const authMainButton =
+  document.getElementById(
+    "auth-main-button"
+  );
+
+const authSwitchButton =
+  document.getElementById(
+    "auth-switch-button"
+  );
+
+const authMessage =
+  document.getElementById(
+    "auth-message"
+  );
+
+let authMode = "login";
 
 const playerCashEl = document.getElementById("player-cash");
 const usernameButton = document.getElementById("username-button");
@@ -858,6 +947,311 @@ function resetDoubleMode() {
   doubleResultButtons.classList.remove("active");
 }
 
+function updateAuthScreen() {
+  authMessage.textContent = "";
+
+  authPassword.value = "";
+  authConfirmPassword.value = "";
+
+  if (authMode === "login") {
+    authTitle.textContent =
+      "WELCOME BACK";
+
+    authMainButton.textContent =
+      "LOG IN";
+
+    authSwitchButton.textContent =
+      "Create an account";
+
+    authEmail.style.display =
+      "none";
+
+    authConfirmPassword.style.display =
+      "none";
+
+    authPassword.autocomplete =
+      "current-password";
+  } else {
+    authTitle.textContent =
+      "CREATE ACCOUNT";
+
+    authMainButton.textContent =
+      "CREATE ACCOUNT";
+
+    authSwitchButton.textContent =
+      "Already have an account?";
+
+    authEmail.style.display =
+      "block";
+
+    authConfirmPassword.style.display =
+      "block";
+
+    authPassword.autocomplete =
+      "new-password";
+  }
+}
+
+async function createODDSAccount() {
+  const username =
+    authUsername.value
+      .trim()
+      .toLowerCase()
+      .replace(
+        /[^a-z0-9_]/g,
+        ""
+      )
+      .slice(0, 16);
+
+  const email =
+    authEmail.value
+      .trim()
+      .toLowerCase();
+
+  const password =
+    authPassword.value;
+
+  const confirmPassword =
+    authConfirmPassword.value;
+
+  if (username.length < 3) {
+    throw new Error(
+      "Username must be at least 3 characters."
+    );
+  }
+
+  if (!email) {
+    throw new Error(
+      "Enter your email."
+    );
+  }
+
+  if (password.length < 6) {
+    throw new Error(
+      "Password must be at least 6 characters."
+    );
+  }
+
+  if (
+    password !== confirmPassword
+  ) {
+    throw new Error(
+      "Passwords do not match."
+    );
+  }
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.signUp({
+      email,
+      password,
+
+      options: {
+        data: {
+          username
+        },
+
+        emailRedirectTo:
+          window.location.origin +
+          window.location.pathname
+      }
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  authMessage.style.color =
+    "var(--green)";
+
+  if (!data.session) {
+    authMessage.textContent =
+      "Account created. Check your email to confirm it, then log in with your username.";
+  } else {
+    await loadCloudProfile();
+    showScreen("menu");
+  }
+}
+
+async function loginWithUsername() {
+  const username =
+    authUsername.value
+      .trim()
+      .toLowerCase();
+
+  const password =
+    authPassword.value;
+
+  if (!username || !password) {
+    throw new Error(
+      "Enter your username and password."
+    );
+  }
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.functions.invoke(
+      "username-login",
+      {
+        body: {
+          username,
+          password
+        }
+      }
+    );
+
+  if (error) {
+    throw new Error(
+      "Invalid username or password."
+    );
+  }
+
+  if (
+    !data?.access_token ||
+    !data?.refresh_token
+  ) {
+    throw new Error(
+      data?.error ||
+      "Invalid username or password."
+    );
+  }
+
+  const {
+    error: sessionError
+  } =
+    await supabaseClient.auth.setSession({
+      access_token:
+        data.access_token,
+
+      refresh_token:
+        data.refresh_token
+    });
+
+  if (sessionError) {
+    throw sessionError;
+  }
+
+  await loadCloudProfile();
+
+  showScreen("menu");
+}
+
+async function handleAuth() {
+  authMessage.textContent = "";
+
+  authMessage.style.color =
+    "var(--red)";
+
+  authMainButton.disabled = true;
+
+  try {
+    if (authMode === "signup") {
+      await createODDSAccount();
+    } else {
+      await loginWithUsername();
+    }
+  } catch (error) {
+    authMessage.textContent =
+      error.message ||
+      "Something went wrong.";
+  }
+
+  authMainButton.disabled = false;
+}
+
+async function loadCloudProfile() {
+  const {
+    data: userData,
+    error: userError
+  } =
+    await supabaseClient.auth.getUser();
+
+  if (
+    userError ||
+    !userData.user
+  ) {
+    throw new Error(
+      "Unable to load account."
+    );
+  }
+
+  const user =
+    userData.user;
+
+  const {
+    data: profile,
+    error: profileError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select(`
+        username,
+        cash,
+        current_streak,
+        longest_streak,
+        best_run,
+        lifetime_earnings,
+        equipped_watch
+      `)
+      .eq("id", user.id)
+      .single();
+
+  if (profileError) {
+    throw profileError;
+  }
+
+  const {
+    data: items,
+    error: itemError
+  } =
+    await supabaseClient
+      .from("player_items")
+      .select("item_id")
+      .eq("user_id", user.id)
+      .eq("item_type", "watch");
+
+  if (itemError) {
+    throw itemError;
+  }
+
+  saveData.username =
+    profile.username;
+
+  saveData.cash =
+    Number(profile.cash);
+
+  saveData.currentStreak =
+    profile.current_streak;
+
+  saveData.longestStreak =
+    profile.longest_streak;
+
+  saveData.bestRun =
+    Number(profile.best_run);
+
+  saveData.lifetimeEarnings =
+    Number(
+      profile.lifetime_earnings
+    );
+
+  saveData.equippedWatch =
+    profile.equipped_watch;
+
+  saveData.ownedWatches =
+    items.length
+      ? items.map(
+          item => item.item_id
+        )
+      : ["starter"];
+
+  saveGame();
+  updateMenu();
+}
+
 function updateStats() {
   const watch = getEquippedWatch();
 
@@ -900,6 +1294,35 @@ watchBackButton.addEventListener("click", () => {
   updateMenu();
   showScreen("menu");
 });
+
+authMainButton.addEventListener(
+  "click",
+  handleAuth
+);
+
+authSwitchButton.addEventListener(
+  "click",
+  () => {
+    authMode =
+      authMode === "login"
+        ? "signup"
+        : "login";
+
+    updateAuthScreen();
+  }
+);
+
+authPassword.addEventListener(
+  "keydown",
+  event => {
+    if (
+      event.key === "Enter" &&
+      authMode === "login"
+    ) {
+      handleAuth();
+    }
+  }
+);
 
 classicModeButton.addEventListener("click", () => {
   closeModeMenu();
@@ -992,8 +1415,37 @@ usernameInput.addEventListener("keydown", event => {
   }
 });
 
-updateMenu();
-showScreen("menu");
+async function initializeODDS() {
+  updateAuthScreen();
+
+  try {
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.getSession();
+
+    if (
+      !error &&
+      data.session
+    ) {
+      await loadCloudProfile();
+
+      showScreen("menu");
+
+      return;
+    }
+  } catch (error) {
+    console.error(
+      "Session restore failed:",
+      error
+    );
+  }
+
+  showScreen("auth");
+}
+
+initializeODDS();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
