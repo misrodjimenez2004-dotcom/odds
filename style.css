@@ -1136,3 +1136,74 @@ button {
 
   color: var(--red);
 }
+
+/* DAILY CHALLENGE */
+
+.daily-panel {
+  width: 100%;
+  margin-top: 16px;
+  padding: 18px;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.daily-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.daily-target-label {
+  margin-top: 16px;
+
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.daily-target {
+  margin-top: 5px;
+
+  font-size: 26px;
+  font-weight: 900;
+}
+
+.daily-progress-bar {
+  width: 100%;
+  height: 8px;
+  margin-top: 14px;
+
+  background: var(--panel-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+#daily-progress-fill {
+  width: 0%;
+  height: 100%;
+
+  background: var(--green);
+  border-radius: 999px;
+}
+
+.daily-progress-text {
+  margin-top: 8px;
+
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.daily-attempts {
+  margin-top: 12px;
+
+  font-size: 20px;
+  letter-spacing: 5px;
+}
