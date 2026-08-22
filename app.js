@@ -1598,22 +1598,44 @@ async function pickRedemptionTile(
     }
 
     if (data.result === "bomb") {
-      tileElement.textContent = "💣";
+  tileElement.textContent = "💣";
 
-      tileElement.classList.add(
-        "redemption-bomb"
-      );
+  tileElement.classList.add(
+    "redemption-bomb"
+  );
 
-      redemptionMessage.textContent =
-        "REDEMPTION FAILED";
+  redemptionMessage.textContent =
+    "REDEMPTION FAILED";
 
-      return;
-    }
+  setTimeout(async () => {
+    await loadCloudProfile();
+    await loadDailyChallenge();
+
+    alert(
+      "Redemption failed. Your cash, streak, and challenge day have been reset."
+    );
+
+    showScreen("menu");
+  }, 700);
+
+  return;
+}
 
     if (data.status === "won") {
-      redemptionMessage.textContent =
-        "REDEEMED";
-    }
+  redemptionMessage.textContent =
+    "REDEEMED";
+
+  setTimeout(async () => {
+    await loadCloudProfile();
+    await loadDailyChallenge();
+
+    alert(
+      "Redemption successful. Your cash and streak are safe."
+    );
+
+    showScreen("menu");
+  }, 700);
+}
 
   } catch (error) {
     console.error(error);
