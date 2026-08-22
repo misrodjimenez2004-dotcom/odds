@@ -1207,3 +1207,26 @@ button {
   font-size: 20px;
   letter-spacing: 5px;
 }
+
+/* REDEMPTION */
+
+#redemption-count {
+  color: var(--text);
+}
+
+#redemption-message {
+  margin-top: 20px;
+  font-weight: 800;
+}
+
+.redemption-safe {
+  background: #173427;
+  border-color: #245b42;
+  color: #63e6a7;
+}
+
+.redemption-bomb {
+  background: #3a191c;
+  border-color: #69282f;
+  color: #ff747e;
+}
