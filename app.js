@@ -1505,6 +1505,44 @@ async function saveCloudProfile() {
   }
 }
 
+async function startRedemption() {
+  try {
+    const { data, error } =
+      await supabaseClient.rpc(
+        "start_odds_redemption"
+      );
+
+    if (error) throw error;
+
+    redemptionCount.textContent =
+      data.safe_picks + " / 15";
+
+    redemptionMessage.textContent =
+      "Reveal 15 safe tiles. One bomb ends it.";
+
+    redemptionBoard.innerHTML = "";
+
+    for (let i = 0; i < 25; i++) {
+      const tile =
+        document.createElement("button");
+
+      tile.className = "tile";
+      tile.textContent = "?";
+
+      redemptionBoard.appendChild(tile);
+    }
+
+    showScreen("redemption");
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      "Unable to start Redemption."
+    );
+  }
+}
+
 async function handleDailyStatusAfterRun() {
   try {
     const {
