@@ -616,6 +616,37 @@ function revealTile(index, tileElement) {
 
 function cashOut() {
   if (!runActive) return;
+  if (classicRunType === "free") {
+  runActive = false;
+
+  finishFreeClassicRun(runScore)
+    .then(() => {
+      endWrap.classList.remove(
+        "busted",
+        "jackpot"
+      );
+
+      endTitle.textContent =
+        "CASHED OUT";
+
+      endScore.textContent =
+        formatMoney(runScore);
+
+      endMessage.textContent =
+        "Daily attempt completed.";
+
+      showScreen("end");
+    })
+    .catch(error => {
+      console.error(error);
+
+      alert(
+        "Unable to save daily attempt."
+      );
+    });
+
+  return;
+}
 
   runActive = false;
 
@@ -639,6 +670,42 @@ function cashOut() {
 
 function bustRun() {
   runActive = false;
+  if (classicRunType === "free") {
+  finishFreeClassicRun(0)
+    .then(() => {
+      revealBombs();
+
+      setTimeout(() => {
+        endWrap.classList.remove(
+          "jackpot"
+        );
+
+        endWrap.classList.add(
+          "busted"
+        );
+
+        endTitle.textContent =
+          "BUST";
+
+        endScore.textContent =
+          "$0";
+
+        endMessage.textContent =
+          "Daily attempt used.";
+
+        showScreen("end");
+      }, 450);
+    })
+    .catch(error => {
+      console.error(error);
+
+      alert(
+        "Unable to save daily attempt."
+      );
+    });
+
+  return;
+}
 
   saveData.busts += 1;
   saveGame();
@@ -661,6 +728,40 @@ function triggerJackpot() {
   if (!runActive) return;
 
   runActive = false;
+  if (classicRunType === "free") {
+  runScore += JACKPOT_AMOUNT;
+
+  finishFreeClassicRun(runScore)
+    .then(() => {
+      endWrap.classList.remove(
+        "busted"
+      );
+
+      endWrap.classList.add(
+        "jackpot"
+      );
+
+      endTitle.textContent =
+        "JACKPOT";
+
+      endScore.textContent =
+        formatMoney(runScore);
+
+      endMessage.textContent =
+        "Daily attempt completed.";
+
+      showScreen("end");
+    })
+    .catch(error => {
+      console.error(error);
+
+      alert(
+        "Unable to save daily attempt."
+      );
+    });
+
+  return;
+}
 
   runScore += JACKPOT_AMOUNT;
 
@@ -1461,6 +1562,28 @@ authPassword.addEventListener(
     }
   }
 );
+
+async function finishFreeClassicRun(winnings) {
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.rpc(
+      "finish_free_classic_attempt",
+      {
+        run_winnings: winnings
+      }
+    );
+
+  if (error) {
+    throw error;
+  }
+
+  await loadCloudProfile();
+  await loadDailyChallenge();
+
+  return data;
+}
 
 async function loadDailyChallenge() {
   try {
