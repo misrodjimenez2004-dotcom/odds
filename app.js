@@ -134,6 +134,24 @@ const statBusts = document.getElementById("stat-busts");
 const statJackpots = document.getElementById("stat-jackpots");
 const statWatchValue = document.getElementById("stat-watch-value");
 
+const dailyDay =
+  document.getElementById("daily-day");
+
+const dailyStreak =
+  document.getElementById("daily-streak");
+
+const dailyTarget =
+  document.getElementById("daily-target");
+
+const dailyProgressFill =
+  document.getElementById("daily-progress-fill");
+
+const dailyProgressText =
+  document.getElementById("daily-progress-text");
+
+const dailyAttempts =
+  document.getElementById("daily-attempts");
+
 const BOARD_SIZE = 25;
 const BOMB_COUNT = 4;
 const MULTIPLIER_COUNT = 4;
