@@ -390,6 +390,7 @@ let runScore = 0;
 let boardData = [];
 let revealedSafeTiles = 0;
 let runActive = false;
+let classicRunType = "free";
 let doubleBet = 0;
 let doubleRoundActive = false;
 let doubleBoard = [];
@@ -532,7 +533,9 @@ function generateBoard() {
   return shuffle(board);
 }
 
-function startGame() {
+function startGame(type = "free") {
+  classicRunType = type;
+  
   runScore = 0;
   revealedSafeTiles = 0;
   runActive = true;
