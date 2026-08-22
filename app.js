@@ -48,6 +48,11 @@ const screens = {
       "watch-screen"
     ),
 
+  redemption:
+  document.getElementById(
+    "redemption-screen"
+  ),
+
   stats:
     document.getElementById(
       "stats-screen"
