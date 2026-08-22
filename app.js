@@ -1547,6 +1547,85 @@ async function startRedemption() {
   }
 }
 
+async function pickRedemptionTile(
+  position,
+  tileElement
+) {
+  if (
+    tileElement.classList.contains(
+      "revealed"
+    )
+  ) {
+    return;
+  }
+
+  try {
+    tileElement.disabled = true;
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "pick_odds_redemption_tile",
+        {
+          tile_position: position
+        }
+      );
+
+    if (error) throw error;
+
+    if (
+      data.result ===
+      "already_revealed"
+    ) {
+      return;
+    }
+
+    tileElement.classList.add(
+      "revealed"
+    );
+
+    if (data.result === "safe") {
+      tileElement.textContent = "✓";
+
+      tileElement.classList.add(
+        "redemption-safe"
+      );
+
+      redemptionCount.textContent =
+        data.safe_picks + " / 15";
+    }
+
+    if (data.result === "bomb") {
+      tileElement.textContent = "💣";
+
+      tileElement.classList.add(
+        "redemption-bomb"
+      );
+
+      redemptionMessage.textContent =
+        "REDEMPTION FAILED";
+
+      return;
+    }
+
+    if (data.status === "won") {
+      redemptionMessage.textContent =
+        "REDEEMED";
+    }
+
+  } catch (error) {
+    console.error(error);
+
+    tileElement.disabled = false;
+
+    alert(
+      "Unable to check Redemption tile."
+    );
+  }
+}
+
 async function handleDailyStatusAfterRun() {
   try {
     const {
