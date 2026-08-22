@@ -134,6 +134,8 @@ const statBusts = document.getElementById("stat-busts");
 const statJackpots = document.getElementById("stat-jackpots");
 const statWatchValue = document.getElementById("stat-watch-value");
 
+const PAID_CLASSIC_ENTRY_FEE = 5000;
+
 const dailyDay =
   document.getElementById("daily-day");
 
@@ -1530,9 +1532,85 @@ async function loadDailyChallenge() {
   }
 }
 
-classicModeButton.addEventListener("click", () => {
+classicModeButton.addEventListener("click", async () => {
   closeModeMenu();
-  startGame();
+
+  try {
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_today_odds_challenge"
+      );
+
+    if (error) {
+      throw error;
+    }
+
+    const attemptsUsed =
+      Number(data.attempts_used || 0);
+
+    const challengeCompleted =
+      Boolean(data.completed);
+
+    const redemptionPending =
+      Boolean(data.redemption_pending);
+
+    if (redemptionPending) {
+      alert(
+        "You must complete Redemption first."
+      );
+      return;
+    }
+
+    // Free Classic attempts are available
+    // until all 5 have been used.
+    if (attemptsUsed < 5) {
+      startGame("free");
+      return;
+    }
+
+    // If all 5 were used without completing
+    // the challenge, paid Classic is locked.
+    if (!challengeCompleted) {
+      alert(
+        "Daily challenge failed. Redemption required."
+      );
+      return;
+    }
+
+    // Challenge completed + freebies used:
+    // Classic now costs money.
+    if (
+      saveData.cash <
+      PAID_CLASSIC_ENTRY_FEE
+    ) {
+      alert(
+        "You need " +
+        formatMoney(
+          PAID_CLASSIC_ENTRY_FEE
+        ) +
+        " to play Classic."
+      );
+      return;
+    }
+
+    saveData.cash -=
+      PAID_CLASSIC_ENTRY_FEE;
+
+    saveGame();
+    updateMenu();
+
+    startGame("paid");
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      "Unable to start Classic."
+    );
+  }
 });
 
 doubleModeButton.addEventListener("click", () => {
