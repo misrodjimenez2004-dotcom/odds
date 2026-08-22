@@ -1523,14 +1523,18 @@ async function startRedemption() {
     redemptionBoard.innerHTML = "";
 
     for (let i = 0; i < 25; i++) {
-      const tile =
-        document.createElement("button");
+  const tile =
+    document.createElement("button");
 
-      tile.className = "tile";
-      tile.textContent = "?";
+  tile.className = "tile";
+  tile.textContent = "?";
 
-      redemptionBoard.appendChild(tile);
-    }
+  tile.addEventListener("click", () => {
+    pickRedemptionTile(i, tile);
+  });
+
+  redemptionBoard.appendChild(tile);
+}
 
     showScreen("redemption");
 
