@@ -1456,6 +1456,76 @@ authPassword.addEventListener(
   }
 );
 
+async function loadDailyChallenge() {
+  try {
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_today_odds_challenge"
+      );
+
+    if (error) {
+      throw error;
+    }
+
+    const progress =
+      Number(data.progress || 0);
+
+    const target =
+      Number(data.target || 0);
+
+    const attemptsUsed =
+      Number(data.attempts_used || 0);
+
+    const attemptsLeft =
+      Math.max(5 - attemptsUsed, 0);
+
+    dailyDay.textContent =
+      "DAY " + data.challenge_day;
+
+    dailyStreak.textContent =
+      "🔥 " + (saveData.currentStreak || 0);
+
+    dailyTarget.textContent =
+      formatMoney(target);
+
+    dailyProgressText.textContent =
+      formatMoney(progress) +
+      " / " +
+      formatMoney(target);
+
+    const percent =
+      target > 0
+        ? Math.min(
+            (progress / target) * 100,
+            100
+          )
+        : 0;
+
+    dailyProgressFill.style.width =
+      percent + "%";
+
+    let dots = "";
+
+    for (let i = 0; i < 5; i++) {
+      dots +=
+        i < attemptsLeft
+          ? "● "
+          : "○ ";
+    }
+
+    dailyAttempts.textContent =
+      dots.trim();
+  } catch (error) {
+    console.error(
+      "Daily challenge load failed:",
+      error
+    );
+  }
+}
+
 classicModeButton.addEventListener("click", () => {
   closeModeMenu();
   startGame();
