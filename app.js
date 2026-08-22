@@ -139,6 +139,15 @@ const statBusts = document.getElementById("stat-busts");
 const statJackpots = document.getElementById("stat-jackpots");
 const statWatchValue = document.getElementById("stat-watch-value");
 
+const redemptionBoard =
+  document.getElementById("redemption-board");
+
+const redemptionCount =
+  document.getElementById("redemption-count");
+
+const redemptionMessage =
+  document.getElementById("redemption-message");
+
 const PAID_CLASSIC_ENTRY_FEE = 5000;
 
 const dailyDay =
