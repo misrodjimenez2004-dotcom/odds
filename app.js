@@ -1621,11 +1621,12 @@ async function finishFreeClassicRun(winnings) {
   if (error) {
     throw error;
   }
+  
+ await loadCloudProfile();
+await loadDailyChallenge();
+await handleDailyStatusAfterRun();
 
-  await loadCloudProfile();
-  await loadDailyChallenge();
-
-  return data;
+return data;
 }
 
 async function loadDailyChallenge() {
