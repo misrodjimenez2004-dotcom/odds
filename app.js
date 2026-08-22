@@ -1715,7 +1715,9 @@ playButton.addEventListener("click", openModeMenu);
 
 cashOutButton.addEventListener("click", cashOut);
 
-newGameButton.addEventListener("click", startGame);
+newGameButton.addEventListener("click", () => {
+  classicModeButton.click();
+});
 
 menuButton.addEventListener("click", () => {
   updateMenu();
