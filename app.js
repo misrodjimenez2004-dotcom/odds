@@ -1491,6 +1491,49 @@ async function saveCloudProfile() {
   }
 }
 
+async function handleDailyStatusAfterRun() {
+  try {
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_today_odds_challenge"
+      );
+
+    if (error) {
+      throw error;
+    }
+
+    const completed =
+      Boolean(data.completed);
+
+    const attemptsLeft =
+      Number(data.attempts_left || 0);
+
+    const redemptionPending =
+      Boolean(data.redemption_pending);
+
+    if (completed) {
+      return;
+    }
+
+    if (
+      attemptsLeft <= 0 &&
+      redemptionPending
+    ) {
+      alert(
+        "Daily challenge failed. Redemption required."
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Daily status check failed:",
+      error
+    );
+  }
+}
+
 function updateStats() {
   const watch = getEquippedWatch();
 
