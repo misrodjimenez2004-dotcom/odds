@@ -1,4 +1,4 @@
-const CACHE_VERSION = "odds-v1.0.6";
+const CACHE_VERSION = "odds-v1.1.1";
 
 const APP_SHELL = [
   "./",
