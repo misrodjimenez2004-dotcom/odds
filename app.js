@@ -1676,13 +1676,11 @@ async function handleDailyStatusAfterRun() {
     }
 
     if (
-      attemptsLeft <= 0 &&
-      redemptionPending
-    ) {
-      alert(
-        "Daily challenge failed. Redemption required."
-      );
-    }
+  attemptsLeft <= 0 &&
+  redemptionPending
+) {
+  await startRedemption();
+}
   } catch (error) {
     console.error(
       "Daily status check failed:",
