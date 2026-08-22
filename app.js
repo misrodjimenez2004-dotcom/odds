@@ -1325,6 +1325,7 @@ async function loadCloudProfile() {
 
   saveGame();
   updateMenu();
+  await loadDailyChallenge();
 }
 
 async function saveCloudProfile() {
